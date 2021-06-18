@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "watch": true,
+        "outDir": "build",
+        "moduleResolution": "node",
+        "noEmitOnError": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "files": [
+        "src/index.ts"
+    ]
+}
