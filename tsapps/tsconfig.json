@@ -3,6 +3,7 @@
         "watch": true,
         "outDir": "build",
         "moduleResolution": "node",
+        "target": "ES5",
         "noEmitOnError": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true
