@@ -1,0 +1,111 @@
+
+
+ java 
+
+ FileInputStream  in = new FileInputStream("xanadu.txt");
+ 
+  byte b = in.read() - is it blocking/nonblocking  -  sync /async
+   |
+  JVM
+  -----
+  JNI -  C Layer
+   | read()
+  OS - Linux 
+   | read()
+ Kernal
+   | read()
+Device Driver
+   |
+ Device  ---taking time(delay) for sending a byte
+
+NIO api
+
+  in.select(callbackfunction) - is it blocking/nonblocking  -  sync /async
+   |
+  JVM
+  -----
+  JNI -  C Layer
+   | select()
+  OS - Linux 
+   | select()
+ Kernal
+   |select()
+Device Driver
+   |
+ Device  ---taking time(delay) for sending a byte
+
+
+JS:
+ APIS
+
+1.timers -settimeout,setinterval
+2.ajax  -xhr
+3.websocket
+
+callbacks
+  function which is registered to handle api result
+
+
+Connectoin con  =DriverManager.getConnection();
+Statement st = con.createState()
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Reactive Programming:
+
+ -async programming
+ -push based programming
+ -streaming
+ -evented programming
+
+pull 
+
+ - consumer -caller is always controlo over producer.
+
+push
+  consumer - listner
+  producer -send the data
+
+pull vs push
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Reactive
+
+ - observable
+ - iterator
+ - fp
+
+reactive
+ -extension -  reactiveX -  rxjs,rxjava,rxjx.......
+
+
+Producer 
+ - data 
+ - error
+ - nomore 
+
+producer push data, error, completed
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
