@@ -1,0 +1,225 @@
+@angular - @ means private npm package
+
+@angular/core
+
+<app-root></app-root> -----| custom element
+           |
+           -------------------|main.js-----app.module.js----app.component.js
+
+			      main.ts------app.module.ts----app.component.ts
+
+
+main method
+
+Angular supports lot of built in decorators.
+
+ Component ContentChild ContentChildren Directive Host HostBinding HostListener Inject Injectable Input NgModule Optional Output Pipe Self SkipSelf ViewChild ViewChildren
+
+component
+
+-declare class
+-decorator - decorate class makes corresponding object.
+
+component
+
+- class 
+
+-decorator
+  is function
+  takes args - decorator meta data
+  meta data - is object in angular
+
+
+Template:
+
+ - inline template -  as part of component
+
+ - external template  separate file and linked
+
+@Component({
+  selector: 'app-root', // tag name
+  // template: `
+  //     <h1>Tata Technologies </h1>  
+  // `
+  templateUrl: './app.component.html'
+})
+export class AppComponent {
+
+}
+
+
+//
+object creations
+
+ let app = new AppComponent()
+
+in angular we dont create infra objects- angular create automatically.
+
+   injector system.
+
+
+Depedency injection
+
+- automation
+ object creation
+    +
+ refer created object inside object  
+
+how to tell angular to create objects.
+
+Angular never creates objects until you tell -  you configure.
+
+Angular creates infra objects only. via decorator.
+
+Even though angular uses infra objects, never creates them until you tell.
+
+Where you can tell?
+
+ inside another object called "Module" - AppModule.
+
+
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+Coding Best practice:
+
+<app-root>
+  ? - ?
+  
+file names:
+
+domainname.component/service/directive/pipe/module /.spec.ts/html/css
+
+hero.component.ts|html|css|spec
+hero.service.ts
+hero.directive.ts
+
+hero.component.ts
+hero.component.css
+hero.component.html
+
+tag name:
+Do use dashed-case or kebab-case for naming the element selectors of components.
+
+app-hero  : dash case / kekab-case
+
+class Names
+
+-Do use upper camel case for class names.
+-Do match the name of the symbol to the name of the file.
+-Do append the symbol name with the conventional suffix x (such as Component, Directive, Module, Pipe, or Service) for a thing of that type.
+   CustomerComponent, CustomerService, CustomerDirective CustomerPipe ..
+
+Do give the filename the conventional suffix (such as .component.ts, .directive.ts, .module.ts, .pipe.ts, or .service.ts) for a file of that type.
+
+   customer.component.ts    ----export class CustomerComponent { }
+   customer.module.ts
+   customer.pipe.ts
+   etc...
+
+modularaization:
+
+1.break app into files and folders
+
+app - main folder -  only root files - module,component
+ |
+ greeter
+ customer
+ product
+ utils
+ services
+ directives
+ pipes
+
+Component driven arch:
+
+ as much as possible we have break component ; 
+
+
+Angular dev tool
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+2. Logical Modularity
+
+ submodule
+
+
+Module Scope:
+
+1.public scope
+   if any objects belong to all modules that  is public
+2.private scope
+  if any objects belong to that module is private including appmodule.
+
+if you want to make any object in public scope, you need to configer it
+exports: 
+
+
+@NgModule({
+    declarations: [GreeterComponent, HelloComponent, HaiComponent,WeclomeComponent],
+    imports: [],
+    providers: [],
+    exports:[GreeterComponent]
+})
+export class GreeterModule {
+
+}
+
+barrel export:
+
+- to reduce mutiple imports from the same folder
+- to reduce file names from the import statement.
+
+steps:
+
+ greeter
+    hai.component.ts
+    greeter.component.ts
+    welcome.component.ts
+
+import {Greeter} from './greeter/greeter.component'
+import {Hai} from './greeter/hai.component'
+import {Welcome} from './greeter/welcome.component'
+ 
+
+greeter
+    hai.component.ts
+    greeter.component.ts
+    welcome.component.ts
+    index.ts
+
+index.js
+   export *from './greeter.component'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
