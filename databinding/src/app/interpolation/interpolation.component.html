@@ -1,0 +1,26 @@
+<div>
+    <div>
+        <h2>Strings</h2>
+        <p>Name {{firstName}} {{lastName}}</p>
+    </div>
+    <h2>Numbers</h2>
+    <div>
+        <p>Salary {{salary}} Tax {{tax}}</p>
+    </div>
+    <h2>Boolean</h2>
+    <div>
+        <p>Status {{status ? "Available" : "Not Available"}}</p>
+    </div>
+    <div>
+        <h2>Object</h2>
+        <address>
+            {{address.doorno}} {{address.city}} {{address.state}}
+        </address>
+    </div>
+    <h2>Arrays</h2>
+    <div>
+        <ul>
+            <li *ngFor="let skill of skills">{{skill}}</li>
+        </ul>
+    </div>
+</div>

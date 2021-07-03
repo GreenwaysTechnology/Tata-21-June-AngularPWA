@@ -4,8 +4,6 @@ import { HaiComponent } from "./hai.component";
 import { HelloComponent } from "./hello.component";
 import { WeclomeComponent } from "./welcome.component";
 
-
-
 @NgModule({
     declarations: [GreeterComponent, HelloComponent, HaiComponent, WeclomeComponent],
     imports: [],

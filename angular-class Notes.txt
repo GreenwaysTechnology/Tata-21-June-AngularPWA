@@ -206,6 +206,329 @@ greeter
 index.js
    export *from './greeter.component'
 
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Automation
+
+ng g m header --module=app   
+ng g c header  --flat=true --export=true --inline-style=true --inline-template--skip-tests=true   --module=header
+
+..........................................................................................
+
+Data binding:
+ Transfering state to ui(view)
+
+Types of databinding
+
+1.interpolation
+2.property binding
+3.attribute binding
+4.event binding
+5.two way data binding
+6.class binding
+7.style binding
+
+
+1.interpolation:
+
+MVC design pattern
+
+Angular implements MVC design pattern.
+
+M -Model data
+V - View - Component Template
+C - Controller - Component
+
+COntroller transfer data to View.
+
+Model- primitives,objects, arrays
+
+interpolation syntax:
+
+ {{Variable}}
+
+import { Component, OnInit } from '@angular/core';
+import { Address } from '../types/address.type';
+
+@Component({
+  selector: 'app-interpolation',
+  templateUrl: './interpolation.component.html',
+  styles: [
+  ]
+})
+export class InterpolationComponent implements OnInit {
+
+  ///data : model
+  //string
+  firstName: string = "Subramanian"
+  lastName = "Murugan";
+
+  //numbers
+  salary: number = 1000;
+  tax = 10;
+
+  //booleans
+  status: boolean = true
+
+  //object
+  address: Address = {
+    city: 'Coimbatore',
+    state: 'Tamil Nadu',
+    doorno: 10
+  }
+  skills: Array<string> = ["JavaScript", "TypeScript", "Angular", "MicroServices"];
+
+
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+<div>
+    <div>
+        <h2>Strings</h2>
+        <p>Name {{firstName}} {{lastName}}</p>
+    </div>
+    <h2>Numbers</h2>
+    <div>
+        <p>Salary {{salary}} Tax {{tax}}</p>
+    </div>
+    <h2>Boolean</h2>
+    <div>
+        <p>Status {{status ? "Available" : "Not Available"}}</p>
+    </div>
+    <div>
+        <h2>Object</h2>
+        <address>
+            {{address.doorno}} {{address.city}} {{address.state}}
+        </address>
+    </div>
+    <h2>Arrays</h2>
+    <div>
+        <ul>
+            <li *ngFor="let skill of skills">{{skill}}</li>
+        </ul>
+    </div>
+</div>
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Property:[]
+
+attribute and property are synonmous
+
+attribute means "property of html elements"
+property means  "property of custom elements"
+
+Where ever you [], you can understand that the element can have dynamic values
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-attribute',
+  templateUrl: './attribute.component.html',
+  styles: [
+  ]
+})
+export class AttributeComponent implements OnInit {
+  imageUrl="favicon.ico"
+  isEnabled:boolean = true
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+<div>
+    <h2>Static Image</h2>
+    <img src="favicon.ico">
+    <h2>Dynamic Image: Getting Image From Code</h2>
+    <img [src]="imageUrl">
+    <div>
+        <button [disabled]="isEnabled">Show Me</button>
+    </div>
+</div>
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+Custom Elements and Property Binding?
+
+-passing data to component dynamically.
+
+<div>
+  <h1>Data Binding: Interpolation</h1>
+  <app-interpolation></app-interpolation>
+  <hr>
+  <h1>Data Binding: AttributeBinding</h1>
+  <app-attribute></app-attribute>
+  <hr>
+  <h1>Data Binding: Property Binding</h1>
+  <app-greeterprop [message]="message" [name]="'Subramanian'" ></app-greeterprop>
+  <app-greeterprop [message]="'Welcome'" [name]="'ram'"  ></app-greeterprop>
+  <app-greeterprop [message]="'Greeter'" [name]="'karthik'"  ></app-greeterprop>
+
+</div>
+
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
+})
+export class AppComponent {
+  message:string = "Hello,How are you?"
+}
+.................
+import { Component, OnInit,Input } from '@angular/core';
+
+@Component({
+  selector: 'app-greeterprop',
+  templateUrl: './greeterprop.component.html',
+  styles: [
+  ]
+})
+export class GreeterpropComponent implements OnInit {
+
+  //place holder variable; used to read value which was sent by parent component
+
+  @Input()
+  message:string=""
+  @Input("name")
+  myname:string=""
+
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+<div>
+    <h2>Value From App {{message}} {{myname}}</h2>
+</div>
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+Container and Presentational Components:
+
+Container components are reponsible for holding data.
+
+Presentational components are just display the data,
+
+///////////////////////////////////////////////////////////////////////////////////////////
+
+Interaction with UI: Event Binding: ()
+
+DOM events:
+
+<button (click)="listner" >Click</button>
+
+EventTarget Object:
+  It connects dom object and listner method.
+  where listener method can read values and other proproperties of dom object.
+
+btn.addEventListener = function(evt){
+   
+
+}
+$event  - is global variable from the angular which has reference of EventTarget object
+
+
+Two way data binding:
+when ever data is transfered from the ui , controller is notified, whenever controller updates the data,ui is notified
+
+Two way data binding is achvied via 
+
+ $event ----instance variable
+
+.............................................................................................
+
+<div>
+    <h2>Click Event</h2>
+    <button (click)="onClick()">Click</button>
+</div>
+<div>
+    <h2>Input Event</h2>
+    <div>
+        <h3>With Listener</h3>
+        <h3>{{inputMessage}}</h3>
+        <input (input)="onRead($event)">
+    </div>
+    <div>
+        <h3>Without Listener</h3>
+        <h3>{{messageOne}}</h3>
+        <input (input)="messageOne=$event.target.value">
+    </div>
+
+    <div>
+        <h3>Property Binding + Event Binding </h3>
+        <h3>{{messageTwo}}</h3>
+        <input  [value]="messageTwo" (input)="messageTwo=$event.target.value">
+    </div>
+    <div>
+        <h3>Property Binding + Event Binding = Banana Box Notation [()] </h3>
+        <h3>{{messageThree}}</h3>
+        <input [(ngModel)]="messageThree">
+    </div>
+
+</div>
+
+............................................................................................
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-dom-event-binding',
+  templateUrl: './dom-event-binding.component.html',
+  styles: [
+  ]
+})
+export class DomEventBindingComponent implements OnInit {
+
+  inputMessage: string = "..."
+
+  messageOne:string="....";
+
+  messageTwo:string="....";
+
+  messageThree:string="....";
+
+  constructor() { }
+
+  onClick() {
+    alert('Button was clicked')
+  }
+  onRead(evt: any) {
+    //  console.log(evt.target.value)
+    this.inputMessage = evt.target.value
+  }
+  ngOnInit(): void {
+  }
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Component Communcation:
+
+ Why component need to communicate?
+
+data transfer
+
+- parent to child  - props pattern
+- child to parent --- event emitter pattern.
+- sibilings  ---- services-rxjs
+
+
+EventEmitter is Rxjs Implmentation:
+
+class EventEmitter<T> extends Subject {
+  constructor(isAsync?: boolean): EventEmitter<T>
+  emit(value?: T): void
+  subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription
+}
 
 
 

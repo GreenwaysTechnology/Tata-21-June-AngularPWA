@@ -1,0 +1,29 @@
+<div>
+    <h2>Click Event</h2>
+    <button (click)="onClick()">Click</button>
+</div>
+<div>
+    <h2>Input Event</h2>
+    <div>
+        <h3>With Listener</h3>
+        <h3>{{inputMessage}}</h3>
+        <input (input)="onRead($event)">
+    </div>
+    <div>
+        <h3>Without Listener</h3>
+        <h3>{{messageOne}}</h3>
+        <input (input)="messageOne=$event.target.value">
+    </div>
+
+    <div>
+        <h3>Property Binding + Event Binding </h3>
+        <h3>{{messageTwo}}</h3>
+        <input  [value]="messageTwo" (input)="messageTwo=$event.target.value">
+    </div>
+    <div>
+        <h3>Property Binding + Event Binding = Banana Box Notation [()] </h3>
+        <h3>{{messageThree}}</h3>
+        <input [(ngModel)]="messageThree">
+    </div>
+
+</div>

@@ -1,0 +1,9 @@
+<div>
+    <h2>Parent Component</h2>
+    <h3>Data From Child {{childMessage}}</h3>
+    <ul>
+        <li *ngFor="let item of list">{{item}}</li>
+    </ul>
+    <hr>
+    <app-child (onSend)="read($event)" ></app-child>
+</div>
