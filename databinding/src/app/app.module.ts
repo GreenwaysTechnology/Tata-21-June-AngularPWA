@@ -6,6 +6,7 @@ import { InterpolationModule } from './interpolation/interpolation.module';
 import { PropertybindingModule } from './propertybinding/propertybinding.module';
 import { EventbindingModule } from './eventsbinding/eventbinding.module';
 import { EventemitterModule } from './eventemitter/eventemitter.module';
+import { DynamicstylesModule } from './dynamicstyles/dynamicstyles.module';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { EventemitterModule } from './eventemitter/eventemitter.module';
     InterpolationModule,
     PropertybindingModule,
     EventbindingModule,
-    EventemitterModule
+    EventemitterModule,
+    DynamicstylesModule
   ],
   providers: [],
   bootstrap: [AppComponent]

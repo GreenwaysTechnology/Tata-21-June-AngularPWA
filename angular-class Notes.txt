@@ -529,6 +529,466 @@ class EventEmitter<T> extends Subject {
   emit(value?: T): void
   subscribe(next?: (value: T) => void, error?: (error: any) => void, complete?: () => void): Subscription
 }
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+					Styling
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+Styling done through css:
+
+1.inline css using style attribute
+2.external css using class attribute
+
+How to add css into angular ?
+
+1.global css
+
+app css
+ styles.css
+via thrid party- like bootstrap,material
+
+
+2.inside component 
+  
+
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-dynamicstyle',
+  template: `
+    <h1 style="text-align: center;"> Styles </h1>
+
+    <div [class.card]="isActive">
+              <p [style.text-decoration]="activeLinkStyle" >Hello</p>
+     </div>
+    <button (click)="changeStyle()">Apply Color</button>
+  `,
+  styles: [
+  ]
+})
+export class DynamicstyleComponent implements OnInit {
+  isActive: boolean = false
+  activeLinkStyle='overline'
+  changeStyle() {
+    this.isActive = !this.isActive
+  }
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+////////////////////////////////////////////////////////////////////////////////////////////
+					pipes
+
+
+<h1>Pipes </h1>
+<div>
+    <h2>Date</h2>
+    <h3>Today {{today | date}}</h3>
+    <h3>Today {{today | date:'dd/MM/yyyy'}}</h3>
+
+</div>
+<div>
+<h2>Currency Pipe</h2>
+    <p>A: {{a | currency}}</p>
+
+    <p>A: {{a | currency:'INR'}}</p>
+
+    <!--output 'CA$0.26'-->
+    <p>A: {{a | currency:'CAD'}}</p>
+
+    <!--output 'CAD0.26'-->
+    <p>A: {{a | currency:'CAD':'code'}}</p>
+
+    <!--output 'CA$0,001.35'-->
+    <p>B: {{b | currency:'CAD':'symbol':'4.2-2'}}</p>
+
+    <!--output '$0,001.35'-->
+    <p>B: {{b | currency:'CAD':'symbol-narrow':'4.2-2'}}</p>
+
+    <!--output '0 001,35 CA$'-->
+    <p>B: {{b | currency:'CAD':'symbol':'4.2-2':'fr'}}</p>
+
+    <!--output 'CLP1' because CLP has no cents-->
+    <p>B: {{b | currency:'CLP'}}</p>
+
+</div>
+<div>
+    <h2>String Pipe</h2>
+    <h3>Name {{name | uppercase}}</h3>    
+    <h3>Name {{name | lowercase}}</h3>
+    <h3>Name {{name | titlecase}}</h3>
+</div>
+<div>
+    <h2>Percentage(%) Pipe</h2>
+    <h3>How much percent {{a | percent}}</h3>    
+ </div>
+
+ <div>
+    <h2>JSON pipe</h2>
+    <h3>{{user | json}}</h3>    
+ </div>
+
+ <div>
+     <h2>Chaining Pipes</h2>
+     <h3>Today :  {{today | date:'fullDate' | uppercase }}</h3>
+ </div>
+ <hr>
+ <div>
+     <h2>Custom Pipes</h2>
+     <h3>Power of {{power}} is {{power | power:2}}</h3>
+ </div>
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-pipes',
+  templateUrl: './pipes.component.html',
+  styles: [
+  ]
+})
+export class PipesComponent implements OnInit {
+
+  today = new Date()
+  a: number = 0.345
+  b: number = 1.3456
+  name: string = "subramanian"
+
+  user = {
+    id: 1,
+    name: 'Subramaian',
+    skills: ['javascript', 'angular', 'microservices']
+  }
+  power: number = 10
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'power'
+})
+export class PowerPipe implements PipeTransform {
+  transform(value: number, exponent: number = 1): number {
+    return Math.pow(value, exponent)
+  }
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////	
+					Directives
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+What is directive?
+
+ Directives are classes that add additional behaviour to elements in angular apps.
+In General directives are custom elements or attributes.
+
+
+Types of Directives
+
+1.Template Directive
+2.Structural directive
+3.Attribute Directive
+
+
+
+1.Template Directive:
+  Directive with templates. Components.
+  Create Custom elements
+
+2.Structrual Directive
+   are directives which change dom layout -  adding or removing dom elements.
+  Create and delete dom elements
+
+Types of Structural Directives
+
+1.NgIf ---class ------ *ngIf
+  if...else logic 
+  conditionally creates or removes of subviews from the template.
+
+2.NgFor----class -----*ngFor
+    repeat a node for each item in a list
+
+3.NgSwitch---class ---*ngSwitch
+    a set of directives that switch among alternative views.
+
+
+ 
+*ngIf:
+<div>
+    <h1>If Condtion</h1>
+    <div *ngIf="isHidden" >
+        <h2>Hey How are you</h2>
+    </div>
+    <button (click)="show()">Show/Hide</button>
+</div>
+
+export class StructuraldirectiveComponent implements OnInit {
+  isHidden: boolean = true;
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+  show(){
+    this.isHidden = !this.isHidden
+  }
+
+}
+
+if i want to implement show/hide use case , dont use *ngIF
+ - dynamically remove and add gives performance issues.
+
+<div [hidden]=>
+
+</div>
+
+<div>
+    <h1>If Condtion</h1>
+    <div *ngIf="isHidden">
+        <h2>Hey How are you</h2>
+    </div>
+    <button (click)="show()">Show/Hide</button>
+</div>
+
+<div>
+    <h1>Using Hidden attribute</h1>
+    <div [hidden]="isShown">
+        <h2>Hey How are you</h2>
+    </div>
+    <button (click)="showHidden()">Show/Hide</button>
+</div>
+
+<div>
+    <h1>if..else</h1>
+    <div *ngIf="isAvailable; else mycondition">
+        <h1>You have Facility!</h1>
+    </div>
+    <ng-template #mycondition>
+        <h1>Sorry! Facility is not availbale</h1>
+    </ng-template>
+    <button (click)="isFacilityAvailable()">Show Facility</button>
+</div>
+
+<div>
+    <h1>Progress Bar using if..else</h1>
+    <h2>
+        <div *ngIf="loading; else notLoading  ">
+            <h2>{{status}}</h2>
+        </div>
+    </h2>
+    <ng-template #notLoading>
+        <div>
+            <h2>{{status}}</h2>
+        </div>
+    </ng-template>
+</div>
+
+<div>
+    <h1 style="text-align: center;">Swich case </h1>
+    <input [(ngModel)]="input">
+    <button (click)="showFeedback()">Show Feedback</button>
+
+    <div [ngSwitch]="feedback">
+        <p *ngSwitchCase="'good'">Good</p>
+        <p *ngSwitchCase="'verygood'">Very Good</p>
+        <p *ngSwitchCase="'bad'">Bad</p>
+        <p *ngSwitchDefault>Your input is not matching</p>
+    </div>
+    <div [ngSwitch]="feedback">
+        <ng-template [ngSwitchCase]="'good'">
+            <h3>Good</h3>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'verygood'">
+            <h3>Very Good</h3>
+        </ng-template>
+        <ng-template [ngSwitchCase]="'bad'">
+            <h3>bad</h3>
+        </ng-template>
+        <ng-template ngSwitchDefault>
+            <h3>Your input is not matching</h3>
+        </ng-template>
+    </div>
+</div>
+
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-structuraldirective',
+  templateUrl: './structuraldirective.component.html',
+  styles: [
+  ]
+})
+export class StructuraldirectiveComponent implements OnInit {
+  isHidden: boolean = true;
+  isShown: boolean = true;
+  isAvailable: boolean = true;
+  loading: boolean = true;
+  status: string = "loading....."
+  input: string = ""
+  feedback: string = ""
+  constructor() {
+    setTimeout(() => {
+      this.loading = !this.loading;
+      this.status = "Response is Ready"
+    }, 5000)
+
+  }
+
+  ngOnInit(): void {
+  }
+  show() {
+    this.isHidden = !this.isHidden
+  }
+  showHidden() {
+    this.isShown = !this.isShown
+  }
+  isFacilityAvailable() {
+    this.isAvailable = !this.isAvailable
+  }
+  showFeedback() {
+    this.feedback = this.input;
+  }
+
+}
+.....................................................................................
+
+*ngFor -  loops
+........................................................................................
+				 Attribute Directives
+......................................................................................
+
+<div>
+
+    <h1>Attribute Directives</h1>
+    <div>
+        <input type="radio" name="colors" (click)="color='lightgreen'">Green
+        <input type="radio" name="colors" (click)="color='cyan'">cyan
+        <input type="radio" name="colors" (click)="color='yellow'">yellow
+    </div>
+
+    <h1 [appHighlight]="color">High Light Me!!!</h1>
+    <!-- <p appHighlight>Attribute Directive</p> -->
+    
+</div>
+import { Component, OnInit } from '@angular/core';
+
+@Component({
+  selector: 'app-attributedirective',
+  templateUrl: './attributedirective.component.html',
+  styles: [
+  ]
+})
+export class AttributedirectiveComponent implements OnInit {
+  color:string = 'blue'
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+
+
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+
+@Directive({
+  selector: '[appHighlight]'
+})
+export class HighlightDirective {
+
+  @Input()
+  appHighlight=''
+
+  constructor(private element:ElementRef) { 
+    console.log(element)
+    console.log(this.element.nativeElement)
+   // this.element.nativeElement.style.backgroundColor='yellow'
+  }
+  //attach events
+  @HostListener('mouseenter')
+  public onMouseEnter(){
+      this.highlight(this.appHighlight)
+  }
+  @HostListener('mouseleave')
+  public onMouseLeave(){
+    this.highlight('')
+
+  }
+  private highlight(color:string){
+    this.element.nativeElement.style.backgroundColor=color;
+
+  }
+
+}
+
+/////////////////////////////////////////////////////////////////////////////////////////////
+                                  Template Reference Variable
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Getting DOM Reference inside template itself -Template Reference variable.
+
+DOM Manipulation in angular patterns:
+
+Within comonent/directive code - inside ts code
+1.Via $event Object.
+2.Via Attribute Directive : ElementRef,@HostListener.
+3.Via structural directive
+
+inside template itself:
+
+4.Template Reference Variable : #
+ To access dom objects inside /across templates.
+
+DOM Manipulation in angular patterns:
+
+
+Within comonent/directive code - inside ts code
+1.Via $event Object.
+2.Via Attribute Directive : ElementRef,@HostListener.
+3.Via structural directive
+
+inside template itself:
+
+4.Template Reference Variable : #
+ To access dom objects inside /across templates.
+
+
+<div>
+    <h1 style="text-align: center;">Template Reference</h1>
+
+    <div>
+        <h1>Name : {{firstname}}</h1>
+        <input #name placeholder="Please Enter Your Name">
+
+        <button class="btn btn-success" (click)="setName(name.value)">Get Value From Template</button>
+    </div>
+</div>
+export class TemplatereferenceComponent implements OnInit {
+
+  color:string = 'red'
+  firstname:string ='Default'
+
+  public setName(name:string){
+     this.firstname = name;
+  }
+  constructor() { }
+
+  ngOnInit(): void {
+  }
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 
 

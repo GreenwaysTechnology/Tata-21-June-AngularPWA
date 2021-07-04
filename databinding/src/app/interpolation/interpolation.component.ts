@@ -5,6 +5,14 @@ import { Address } from '../types/address.type';
   selector: 'app-interpolation',
   templateUrl: './interpolation.component.html',
   styles: [
+    `
+      .card {
+         background-color:gray;
+      }
+      .heading {
+        background-color:yellow;
+      }
+    `
   ]
 })
 export class InterpolationComponent implements OnInit {
