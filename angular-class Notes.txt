@@ -984,6 +984,705 @@ export class TemplatereferenceComponent implements OnInit {
 
 }
 /////////////////////////////////////////////////////////////////////////////////////////////
+                                 Forms
+.............................................................................................
+
+Types of forms
+
+1.Template driven forms
+2.Reactive Forms
+
+
+Template driven Forms
+
+Steps:
+
+1.import formsModule where ever you create forms
+
+import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { BrowserModule } from '@angular/platform-browser';
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,FormsModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
+
+Step 2: create model object
+
+export class Post {
+    constructor(public id: number, public title: string, public author: string) { }
+}
+
+3.create basic form template: we have to use bootstrap form template syntax.
+<div class="container">
+  <h1>Forms -Template Driven </h1>
+  <h1>Post Form</h1>
+  <form>
+    <div class="form-group">
+      <label for="title">Title</label>
+      <input type="text" class="form-control" id="title" required>
+    </div>
+
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" required>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+  </form>
+</div>
+
+4.Model to form binding: data binding
+
+
+4.1.create model object inside component
+import { Component } from "@angular/core";
+import { Post } from "./models/form.modle";
+
+
+@Component({
+    selector: 'app-post-form',
+    templateUrl: 'postform.component.html'
+})
+export class PostFormComponent {
+    post: any;
+    constructor() {
+        this.post = new Post(Math.random(), "Learn Angular", "Misko Hevery")
+    }
+}
+
+Data binding inside template:
+
+
+points: 
+ - name attribute must be added 
+ -we may add json pipe to test modification
+<div>
+    <h1>Forms -Template Driven </h1>
+    <h1>Post Form</h1>
+    <!--todo:remove this once development is over-->
+    {{post | json}}
+    <form>
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" name="title" [(ngModel)]="post.title" class="form-control" id="title" required>
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="author" [(ngModel)]="post.author" class="form-control" id="name" required>
+        </div>
+
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+</div>
+
+5.How to add select control and bind list of values
+
+
+export class Post {
+    constructor(public id: number, public title: string, public author: string,public category:string) { }
+}
+
+import { Component } from "@angular/core";
+import { Post } from "./models/form.modle";
+
+
+@Component({
+    selector: 'app-post-form',
+    templateUrl: 'postform.component.html'
+})
+export class PostFormComponent {
+    post: any;
+    categories:Array<string> = ["User Interface","MicroServices","Database","Devops"];
+    constructor() {
+        this.post = new Post(Math.random(), "Learn Angular", "Misko Hevery",this.categories[0])
+    }
+}
+
+ <div class="form-group">
+            <label for="category">Category</label>
+          <select class="form-control" id="category" name="category" required [(ngModel)]="post.category">
+                <option *ngFor="let cat of categories" [value]="cat">
+                    {{cat}}
+                </option>
+            </select>
+        </div>
+
+
+..........................................................................................
+
+6.Validation:
+
+Template Reference variable for form tag
+
+<form #postForm> - postForm is reference variable points to "Form Object"
+  postForm.formproperty.
+
+<form #postForm="ngForm"> - postForm is reference variable points to "NgForm" Object.
+
+What is NgForm?
+
+ngForm is Object which inherits HTML Form
+
+class ngForm extends HTMLForm{
+  All form base class properties
+  +extra behavior=>Ready made validation code
+  +form submission behviours
+}
+
+<form #postForm="ngForm">
+
+The variable postForm is now a reference to the NgForm 
+directive that governs the form as a whole.
+
+The NgForm directive:
+
+What NgForm directive? You didn't add an NgForm directive.
+
+Angular did. Angular automatically creates and attaches
+ an NgForm directive to the <form> tag.
+
+"The NgForm directive supplements the form element with additional features. 
+
+
+It holds the controls you created for the elements  with an "ngModel directive" and name attribute,
+ and monitors their properties, including their validity.
+ 
+It also has its own valid property which is true only if every contained control is valid."
+
+Note: NgForm is built Object ,has more logic for simlifying our form handling process.
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+ngModel:
+
+Track control state and validity with ngModel:
+.............................................
+
+ngModel:
+> Using ngModel in a form gives you more than just two-way data binding. 
+
+>It also tells you if the user touched the control, if the value changed, or if the value became invalid.
+
+State 	                        Class if true 	Class if false
+The control has been visited.  	  ng-touched 	ng-untouched
+The control's value has changed.  ng-dirty 	    ng-pristine
+The control's value is valid. 	  ng-valid 	    ng-invalid
+
+State Tracking Steps:
+
+1.Look but don't touch.
+2.Click inside the name box, then click outside it.
+3.Add slashes to the end of the name.
+4.Erase the name.
+
+ng-untouched - if you dont touch
+ng-touched - if you touch
+ng-dirty - if you changed
+ng-invalid - if you remove all-empty field.
+
+
+Add custom CSS for visual feedback:
+
+Valid + Required - green Color
+Valid + optional - white color
+Invalid (required | optional) - red Color
+
+Angular Css:
+.ng-valid[required], .ng-valid.required  {
+  border-left: 5px solid #42A948; /* green */
+}
+
+.ng-invalid:not(form)  {
+  border-left: 5px solid #a94442; /* red */
+}
+
+
+Validation 
+<div>
+    <h1>Forms -Template Driven </h1>
+    <h1>Post Form</h1>
+    <!--todo:remove this once development is over-->
+    {{post | json}}
+    <form #postForm="ngForm">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" #errorMsg1="ngModel" name="title" [(ngModel)]="post.title" class="form-control"
+                id="title" required>
+
+        </div>
+        <div [hidden]="errorMsg1.valid || errorMsg1.pristine" class="alert alert-danger">
+            Title is required
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="author" #errorMsg2="ngModel" [(ngModel)]="post.author" class="form-control"
+                id="name" required>
+        </div>
+        <div [hidden]="errorMsg2.valid || errorMsg2.pristine" class="alert alert-danger">
+            Author is required
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category" required [(ngModel)]="post.category">
+                <option *ngFor="let cat of categories" [value]="cat">
+                    {{cat}}
+                </option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success" [disabled]="!postForm.form.valid">Submit</button>    </form>
+</div>
+
+7.Submit form
+
+<div [hidden]="submitted">
+    <h1>Forms -Template Driven </h1>
+    <h1>Post Form</h1>
+    <!--todo:remove this once development is over-->
+    {{post | json}}
+    <form #postForm="ngForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" #errorMsg1="ngModel" name="title" [(ngModel)]="post.title" class="form-control"
+                id="title" required>
+
+        </div>
+        <div [hidden]="errorMsg1.valid || errorMsg1.pristine" class="alert alert-danger">
+            Title is required
+        </div>
+
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" name="author" #errorMsg2="ngModel" [(ngModel)]="post.author" class="form-control"
+                id="name" required>
+        </div>
+        <div [hidden]="errorMsg2.valid || errorMsg2.pristine" class="alert alert-danger">
+            Author is required
+        </div>
+        <div class="form-group">
+            <label for="category">Category</label>
+            <select class="form-control" id="category" name="category" required [(ngModel)]="post.category">
+                <option *ngFor="let cat of categories" [value]="cat">
+                    {{cat}}
+                </option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-success" [disabled]="!postForm.form.valid">Submit</button>
+    </form>
+</div>
+
+<div class="container" [hidden]="!submitted">
+    <h2>You submitted the following:</h2>
+    <div class="row">
+        <div class="col-xs-3">Id : </div>
+        <div class="col-xs-9  pull-left">{{ post.id }}</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">Title : </div>
+        <div class="col-xs-9  pull-left">{{ post.title }}</div>
+    </div>
+    <div class="row">
+        <div class="col-xs-3">Author : </div>
+        <div class="col-xs-9 pull-left">{{ post.author }}</div>
+    </div>
+    <br>
+    <button class="btn btn-primary" (click)="submitted=false">GoBack</button>
+</div>
+..............................................................................................
+				 Services
+............................................................................................
+
+ng g m header --module=app   
+ng g c header  --flat=true --export=true --inline-style=true --inline-template--skip-tests=true   --module=header
+
+
+Services are objects in general having application logic.
+
+Types of services:
+
+1.global services
+    - services are used by many components 
+ eg: logger
+2.module specific services
+   ProductService
+
+
+Service Object creations:
+
+Ways 1:
+inside module
+ -providers:[HelloService]
+
+Way 2: 
+ inside service using @Injectable()
+
+
+import { Injectable } from "@angular/core";
+import { GreeterModule } from "./greeter.module";
+
+// @Injectable({
+//     providedIn: GreeterModule // uses GreeterModule injector to create service object
+// })
+@Injectable({
+    providedIn: 'root' //uses root Injector to create service Object
+})
+export class HelloService {
+    constructor() {
+        console.log('Hello Service is created')
+    }
+    //biz methods; service methods
+    public sayHello(): string {
+        return "Hello!!"
+    }
+}
+////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+Async Services:
+
+1.callback pattern
+2.Promise pattern
+3.async...await pattern
+4.Rxjs
+
+
+data is available in delayed manner, inside component where should i initalize the data.
+
+constructor()
+ inside constructor dont initalize any resource intensive tasks. like ajax calls, web socket class,any async calls.
+
+
+ ngOnInit(): void {
+  }
+
+Component life cycle methods:
+
+in order
+
+- constructor
+
+- ngOnChanges() 
+
+- ngOnInit()
+
+- ngDoCheck()
+
+-ngAfterContentInit()
+
+-ngAfterContentChecked()
+
+-ngAfterViewInit()	
+
+-ngAfterViewChecked()	
+
+-ngOnDestroy()	
+
+All life cycle hooks has interfaces
+
+ngOnInit:
+  is called when component is mounted./view is created.
+
+where only we have to write resource intensive tasks, where constructors are used for di only.
+import { Component, OnInit } from '@angular/core';
+import { HaiService } from './hai.service';
+
+@Component({
+  selector: 'app-hai',
+  templateUrl: './hai.component.html',
+  styles: [
+  ]
+})
+export class HaiComponent implements OnInit {
+
+  message!: string;
+
+  constructor(private service: HaiService) { }
+
+  async ngOnInit(): Promise<void> {
+    //callback style
+    // this.service.sayHai((message: string) => {
+    //   this.message = message
+    // })
+    //Promises and thenables
+    // this.service.sayHai().then(
+    //   (message: string) => {
+    //     this.message = message;
+    //   }
+    // ).catch(err => {
+    //   console.log(err);
+    // })
+    this.message = await this.service.sayHai()
+
+  }
+
+}
+............................................................................................
+
+import { Injectable } from '@angular/core';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class HaiService {
+
+  message: string = "Hai,Async"
+
+  constructor() { }
+
+  //callback style
+  // public sayHai(action:any): void {
+  //   setTimeout(action, 5000, this.message)
+  // }
+  public sayHai(): Promise<string> {
+    return new Promise((resolve, reject) => {
+      setTimeout(resolve, 5000, this.message)
+    });
+  }
+
+}
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+Rx js integration to replace promises:
+
+Promises are "fire and forget" model
+
+Rxjs(Observables) are streaming model
+
+Streaming adds more benefits:
+
+1.data processing in declartive way.
+
+2.paralle data processing using schdulers
+
+Thats what angular introduced rx js inside angular
+
+Observables Used in angular:
+............................
+
+1.You can define custom events that send observable output data from a child to a parent component. - event emitter
+2.The HTTP module uses observables to handle AJAX requests and responses.
+3.The Router and Forms modules use observables to listen for and respond to user-input events.
+
+Observables is async by default?
+
+ No!
+
+We need to use proper operators and schdulers.
+
+Streaming + NonBlocking(async)
+
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators'
+
+@Injectable({
+  providedIn: 'root'
+})
+export class HaiService {
+
+  message: string = "Hai,Async"
+
+  constructor() { }
+
+  //Rxjs-Observable
+  public sayHai(): Observable<string> {
+    return new Observable<string>(observer => {
+      setTimeout(() => { observer.next(this.message) }, 5000)
+    }).pipe(map(res => res.toUpperCase()))
+  }
+
+}
+
+import { Component, OnInit } from '@angular/core';
+import { HaiService } from './hai.service';
+
+@Component({
+  selector: 'app-hai',
+  templateUrl: './hai.component.html',
+  styles: [
+  ]
+})
+export class HaiComponent implements OnInit {
+
+  message!: string;
+
+  constructor(private service: HaiService) { }
+
+  ngOnInit(): void {
+
+    this.service.sayHai().subscribe((message: string) => {
+      this.message = message;
+    }, err => {
+
+    }, () => {
+
+    })
+  }
+
+}
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+Code refactoring :
+
+ In the component template, if you want to show result of Observable type
+
+Solutions:
+
+1.using subscribe method
+  this.service.sayHai().subscribe((message: string) => {
+      this.message = message;
+    }, err => {
+
+    }, () => {
+
+    })
+2. using pipe called "async"
+
+<div>
+    <h2>Async Service</h2>
+    <h3>{{message | async}}</h3>
+</div>
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { HaiService } from './hai.service';
+
+@Component({
+  selector: 'app-hai',
+  templateUrl: './hai.component.html',
+  styles: [
+  ]
+})
+export class HaiComponent implements OnInit {
+
+  message!: Observable<string>
+
+  constructor(private service: HaiService) { }
+
+  ngOnInit(): void {
+    this.message = this.service.sayHai();
+  }
+
+}
+
+............................................................................................
+
+import { Injectable } from "@angular/core";
+import { of,from,Observable } from "rxjs";
+import { delay } from "rxjs/operators";
+import { HEROES } from "../mock-data/heroes.mock";
+import { Hero } from "../types/hero.type";
+
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class HeroService {
+    constructor() { }
+
+    public findAll(): Observable<Hero[]> {
+        return of<Hero[]>(HEROES).pipe(delay(6000))
+    }
+
+}
+
+
+import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Hero } from '../types/hero.type';
+import { HeroService } from './heroes.service';
+
+@Component({
+  selector: 'app-hero',
+  templateUrl: './hero.component.html',
+  styles: [
+  ]
+})
+export class HeroComponent implements OnInit {
+
+  heroes!: Observable<Hero[]>
+
+  constructor(private heroservice:HeroService) { }
+
+  ngOnInit(): void {
+    this.heroes = this.heroservice.findAll();
+  }
+
+}
+
+<ul>
+    <li *ngFor="let hero of heroes | async">{{hero.id}} {{hero.name}}</li>
+</ul>
+.............................................................................................
+				AJAX - Programming -  networking from javascript
+.............................................................................................
+
+AJAX uses XMLHttpRequest Object for connecting web end points.
+
+We dont use it directly , but every framework uses this internally.
+
+Angular has abstracted XHR with Rxjs(Observable).
+
+Angular HTTP  === Reactive() + Non blocking(async)
+
+
+@angular/common/http - Package
+
+HttpClientModule - this must be registered
+
+
+
+Steps:
+
+1.inject HttpClientModule
+
+import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { HeroComponent } from './hero.component';
+import { HttpClientModule } from '@angular/common/http'
+
+
+
+@NgModule({
+  declarations: [
+    HeroComponent
+  ],
+  imports: [
+    CommonModule, HttpClientModule
+  ],
+  exports: [
+    HeroComponent
+  ]
+})
+export class HeroesModule { }
+
+
+2.HttpClient 
+  is used to communicate with back ends -  wrapper for xhr object.
+ 
+apis to call back ends
+
+-get
+-post
+-delete
+-put
+
+
+
 
 
 
