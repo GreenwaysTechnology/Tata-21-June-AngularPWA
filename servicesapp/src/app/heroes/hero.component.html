@@ -1,3 +1,12 @@
 <ul>
     <li *ngFor="let hero of heroes | async">{{hero.id}} {{hero.name}}</li>
 </ul>
+<hr>
+<div>
+    <input type="text" [(ngModel)]="id" />
+    <button (click)="findByid()">GetHero ById</button>
+    <div>
+        <h2>Hero {{hero?.id}} {{hero?.name}}</h2>
+    </div>
+
+</div>

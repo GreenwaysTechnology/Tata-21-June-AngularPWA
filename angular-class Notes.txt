@@ -1680,6 +1680,441 @@ apis to call back ends
 -post
 -delete
 -put
+....
+
+mock server setup:
+
+
+
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { of, from, Observable } from "rxjs";
+import { delay } from "rxjs/operators";
+import { HEROES } from "../mock-data/heroes.mock";
+import { Hero } from "../types/hero.type";
+
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class HeroService {
+    constructor(private http: HttpClient) { }
+
+    //mock data api
+    // public findAll(): Observable<Hero[]> {
+    //     return of<Hero[]>(HEROES).pipe(delay(6000))
+    // }
+    public findAll(): Observable<Hero[]> {
+        const url = 'http://localhost:3000/heroes';
+        return this.http.get<Hero[]>(url)
+    }
+
+}
+/////////////////////////////////////////////////////////////////////////////////////////
+
+How to handle http errors?
+
+ catchError operator handle errors
+
+
+  private handleError<T>(operation = "operation", result?: T) {
+    return (error: any): Observable<T> => {
+      console.log(error.message);
+      return of(result as T);
+    }
+  }
+///
+
+if any error occurs
+
+  - you can throw the error, handle error in subscribe error block.
+  - you can throw the error, but you can handle using catchError operator, which returns error 
+    as data.
+
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Injectable } from "@angular/core";
+import { of, from, Observable } from "rxjs";
+import { delay, catchError, tap } from "rxjs/operators";
+import { HEROES } from "../mock-data/heroes.mock";
+import { Hero } from "../types/hero.type";
+
+
+
+@Injectable({
+    providedIn: 'root'
+})
+export class HeroService {
+    constructor(private http: HttpClient) { }
+
+    //mock data api
+    // public findAll(): Observable<Hero[]> {
+    //     return of<Hero[]>(HEROES).pipe(delay(6000))
+    // }
+    public findAll(): Observable<Hero[]> {
+
+        const fallbackHero = [
+            {
+                id: 100,
+                name: 'Subramanian'
+            }
+        ];
+
+        const url = 'http://localhost:3000/heroes';
+        // return this.http.get<Hero[]>(url).pipe(
+        //     catchError(this.handleError<Hero[]>('findAll-Heros', [])))
+
+        //fallback Hero
+        return this.http.get<Hero[]>(url).pipe(
+            tap(() => console.log('fetching heroes')),
+            catchError(this.handleError<Hero[]>('findAll-Heros', fallbackHero)))
+    }
+
+    findById(id: number): Observable<Hero> {
+        const url = `http://localhost:3000/heroes/${id}`;
+        return this.http.get<Hero>(url).pipe(
+            tap(() => console.log(`fetched Hero id = ${id}`)),
+            catchError(this.handleError<Hero>(`findByid id=${id}`, { id: 400, name: 'Fallback' }))
+        )
+    }
+    save(hero: Hero) {
+        console.log(hero)
+        const url = `http://localhost:3000/heroes`;
+
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        }
+        //sending todo data to server
+        return this.http.post<Hero>(url, hero, httpOptions)
+            .pipe(tap(() => console.log(`added Hero`)),
+                catchError(this.handleError<Hero>('Save Hero'))
+            )
+    }
+
+    remove(id: number): Observable<Hero> {
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        }
+        const url = `http://localhost:3000/heroes/${id}`;
+        return this.http.delete<Hero>(url, httpOptions)
+            .pipe(tap(() => console.log(`deleted Hero ${id}`)),
+                catchError(this.handleError<Hero>('delete Hero'))
+            )
+    }
+    update(id: number, todo: Hero): Observable<Hero> {
+        console.log('service update method')
+        const url = `http://localhost:3000/heroes/${id}`;
+
+        const httpOptions = {
+            headers: new HttpHeaders({
+                'Content-Type': 'application/json'
+            })
+        }
+        return this.http.put<Hero>(url, todo, httpOptions)
+            .pipe(tap(() => console.log(`updated Hero ${todo.id}`)),
+                catchError(this.handleError<any>('update Hero'))
+            )
+    }
+
+    private handleError<T>(operation = "operation", result?: T) {
+        return (error: any): Observable<T> => {
+            console.log('got error')
+            console.log(error.message);
+            return of(result as T);
+        }
+    }
+
+}
+.............................................................................................
+					Routing
+............................................................................................
+What is routing?
+ Navigation between pages.
+
+Routing is implemented in web apps via links - hyper links.
+
+HTML 5 offers hyper links through which we can navigate from one page to another page.
+
+HTML offers an address to which we will be redirected- URL,URI.
+
+Types of navigation
+
+1.static  - html
+2.dynamic  - via server side programs or javascript
+
+
+Web app types:
+
+1.static web application
+2.Dynamic web app - using cgi,servlets,asp,php...
+3.Web services -  XML-Soap,RESTFull- http,any content
+4.Single Page Web apps - SPA  - HTML 5, CSS 3,Javascript 5
+
+In 2008, html 5 introduced dynamic navigation inside browser via javascript api called history which is object contains apis related for navigation.
+
+This is brith of single page web apps.
+
+single page web apps(spa) contains one physical page we call landing page - home page
+
+How to create single page Application?
+
+SPAs use AJAX and HTML5 to create fluid and responsive Web apps, without constant page reloads. However, this means much of the work happens on the client side, in JavaScript.
+
+SPA Stack:
+
+javascript
+HTML 5
+CSS 3
+
+
+Frameworks and SPA :
+
+ Every client side js frameworks today offers spa implementation.
+ Angular provides a spa implemenation via "@angular/routing" project.
+
+
+Routing Core Concepts:
+
+1.URL Patterns
+
+http://www.mydomain.com/index.html - static url
+http://www.mydomain.com/contactus.pdf -static url
+http://www.mydomain.com/login.aspx / login.jsp /login.php  - dynamic content url
+
+http://www.mydomain.com/api/users/comments  -  Resource based url - REST API
+
+Spa url patterns: hashbang url pattern
+
+http://www.mydomain.com/index.html#contactus
+http://www.mydomain.com/index.html#products
+http://www.mydomain.com/index.html#profiles
+
+spa simple syntax : here landing page and # symbol not req.which is implict.
+http://www.mydomain.com/profiles
+
+2.URLs AND page
+
+ Every url is mapped with Component which display content of page.
+
+
+How to Implement SPA IN angular?
+
+Enabling spa in index.html
+
+ <base href="/">
+
+ This assumes that the app folder is the application root, and uses "/".
+ This activates routing.
+http://localhost:4200/profiles
+
+<base href="tata">
+
+http://localhost:4200/tata/profiles
+//////////////////////////////////////////////////////////////////////////////////////////////
+App Shell /landing/ home page:
+..............................
+
+Generally app shell would be app.component only
+
+App shell contains
+
+-master menu information
+-inital page
+
+
+RouterModule:
+ It is used to configure routing features.
+
+App
+ - collection of domains
+
+Ecommerce App
+
+-products
+-customers
+-payments
+etc...
+
+Features:
+Products
+  -components,services,directives,utilties...
+menus
+
+ng g m header --module=app   
+ng g c header  --flat=true --export=true --inline-style=true --inline-template--skip-tests=true   --module=header
+
+............................................................................................
+
+Objects in router
+
+1.RouterModule
+2.Routes
+3.RouterLink
+4.RouterLinkActive
+5.RouterOutlet
+6.ActivatedRoute
+   if you want to access route informations inside component.
+7.Router
+ How to navigate
+ -via hyper links
+ -via coding -programmetic routing
+
+A service that provides navigation among views and URL manipulation capabilities.
+
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, UrlSegment } from '@angular/router';
+
+@Component({
+  selector: 'app-products',
+  template: `
+    <p>
+      products works!
+      <button (click)="goToAboutUs()">GoToAboutUs</button>
+    </p>
+  `,
+  styles: [
+  ]
+})
+export class ProductsComponent implements OnInit {
+
+  constructor(private route: ActivatedRoute, private router: Router) { }
+
+  ngOnInit(): void {
+    this.route.url.subscribe((url) => {
+      url.forEach(info => {
+        console.log(info.path, info.parameters)
+      })
+    })
+  }
+  public goToAboutUs() {
+    this.router.navigate(['aboutus']);
+  }
+
+}
+///////////////////////////////////////////////////////////////////////////////////////////
+                                     Dynamic Url
+
+
+<h2>HEROES</h2>
+<ul class="heroes">
+  <li *ngFor="let hero of heroes$ | async"
+    [class.selected]="hero.id === selectedId">
+    <a [routerLink]="['/hero', hero.id]">
+      <span class="badge">{{ hero.id }}</span>{{ hero.name }}
+    </a>
+  </li>
+</ul>
+////////////////////////////////////////////////////////////////////////////////////////////
+                                 Navigation patterns
+
+1. via hyper links - <a routerLink="/foo">
+2. via coding  - Router
+
+class Router {
+  constructor(rootComponentType: Type<any>, urlSerializer: UrlSerializer, rootContexts: ChildrenOutletContexts, location: Location, injector: Injector, loader: NgModuleFactoryLoader, compiler: Compiler, config: Route[])
+  events: Observable<Event>
+  routerState: RouterState
+  errorHandler: ErrorHandler
+  malformedUriErrorHandler: (error: URIError, urlSerializer: UrlSerializer, url: string) => UrlTree
+  navigated: boolean
+  urlHandlingStrategy: UrlHandlingStrategy
+  routeReuseStrategy: RouteReuseStrategy
+  onSameUrlNavigation: 'reload' | 'ignore'
+  paramsInheritanceStrategy: 'emptyOnly' | 'always'
+  urlUpdateStrategy: 'deferred' | 'eager'
+  relativeLinkResolution: 'legacy' | 'corrected'
+  config: Routes
+  url: string
+  initialNavigation(): void
+  setUpLocationChangeListener(): void
+  getCurrentNavigation(): Navigation | null
+  resetConfig(config: Route[]): void
+  dispose(): void
+  createUrlTree(commands: any[], navigationExtras: UrlCreationOptions = {}): UrlTree
+  navigateByUrl(url: string | UrlTree, extras: NavigationBehaviorOptions = {...}): Promise<boolean>
+  navigate(commands: any[], extras: NavigationExtras = { skipLocationChange: false }): Promise<boolean>
+  serializeUrl(url: UrlTree): string
+  parseUrl(url: string): UrlTree
+  isActive(url: string | UrlTree, exact: boolean): boolean
+}
+
+-navigate method is used to move from one page to another with help of coding
+////////////////////////////////////////////////////////////////////////////////////////////
+
+App features:
+
+
+Organizing the application features into modules.
+
+Navigating to a component (Heroes link to "Heroes List").
+
+Including a route parameter (passing the Hero id while routing to the "Hero Detail").
+
+Child routes (the Crisis Center has its own routes).
+
+The CanActivate guard (checking route access).
+
+The CanActivateChild guard (checking child route access).
+
+The CanDeactivate guard (ask permission to discard unsaved changes).
+The Resolve guard (pre-fetching route data).
+Lazy loading an NgModule.
+The CanLoad guard (check before loading feature module assets).
+
+MileStone - 1 basic router setup
+  We have discussed already.
+
+MileStone - 2 - router config segration into a separate router module file
+//////////////////////////////////////////////////////////////////////////////////////////
+
+				Milestone 5: Route Guards
+
+What we can access / What we can not?
+
+////////////////////////////////////////////////////////////////////////////////////////////
+
+Perhaps the user is not authorized to navigate to the target component.
+Maybe the user must login (authenticate) first.
+Maybe you should fetch some data before you display the target component.
+You might want to save pending changes before leaving a component.
+You might ask the user if it's OK to discard pending changes rather than save them.
+
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+				Milestone 6 : Lazy loading
+////////////////////////////////////////////////////////////////////////////////////////////
+
+In General Modules are preloaded when application is sent to browser.this sometimes stops
+performance. if modules are loaded up front, which stops inital load performance , in order to boost load performance, angular loads modules on demand- with help of webpack lazy loading feature.
+if i click that menu only that module will be loaded, once module loaded it is kept in browser cache.
+
+How to enable lazy loading?
+
+ loadChildren:()
+/////////////////////////////////////////////////////////////////////////////////////////////
+				Named outlet
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+In a single page we can have multiple outlets
+
+<router-outlet></router-outlet>
+
+<router-outlet name="popup"></router-outlet>
+
+http://localhost:4200/admin(popup:compose)
+http://localhost:4200/superheroes(popup:compose)
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
 
 
 

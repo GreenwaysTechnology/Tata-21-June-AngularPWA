@@ -12,11 +12,19 @@ import { HeroService } from './heroes.service';
 export class HeroComponent implements OnInit {
 
   heroes!: Observable<Hero[]>
+  id!: number
+  hero!: Hero;
 
-  constructor(private heroservice:HeroService) { }
+  constructor(private heroservice: HeroService) { }
 
   ngOnInit(): void {
     this.heroes = this.heroservice.findAll();
+  }
+  findByid() {
+    this.heroservice.findById(this.id).subscribe((hero: Hero) => {
+      console.log(hero);
+      this.hero = hero
+    })
   }
 
 }

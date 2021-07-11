@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeroComponent } from './hero.component';
 import { HttpClientModule } from '@angular/common/http'
+import { FormsModule } from '@angular/forms';
 
 
 
@@ -10,7 +11,7 @@ import { HttpClientModule } from '@angular/common/http'
     HeroComponent
   ],
   imports: [
-    CommonModule, HttpClientModule
+    CommonModule, HttpClientModule,FormsModule
   ],
   exports: [
     HeroComponent
